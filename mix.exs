@@ -14,7 +14,8 @@ defmodule CiStatus.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      applications: [:logger, :sqlite_ecto2, :ecto, :cowboy, :plug]
+      applications: [:logger, :sqlite_ecto2, :ecto, :cowboy, :plug],
+      mod: {CiStatus.App, []}
     ]
   end
 

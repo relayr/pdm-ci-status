@@ -2,10 +2,9 @@ defmodule CiStatus.Web do
   alias CiStatus.Schema, as: Schema
   alias CiStatus.Repo, as: Repo
 
-  def init(default_opts) do
+  def init(opts) do
     IO.puts "Starting up CiStatus..."
-    CiStatus.Repo.start_link()
-    default_opts
+    opts
   end
 
   def call(conn, _opts) do
@@ -27,7 +26,7 @@ defmodule CiStatus.Web do
       |> Plug.Conn.send_resp(status, body)
   end
 
-  def route("GET", [type, "packages", name, "badge"], _conn) do
+  defp route("GET", [type, "packages", name, "badge"], _conn) do
     IO.puts "Get '#{type}' badge for '#{name}'"
     case Repo.get_by(Schema, type: type, name: name) do
       nil ->
@@ -38,7 +37,7 @@ defmodule CiStatus.Web do
     end
   end
 
-  def route("GET", [type, "packages", name, "link"], _conn) do
+  defp route("GET", [type, "packages", name, "link"], _conn) do
     IO.puts "Get '#{type}' link for '#{name}'"
     case Repo.get_by(Schema, type: type, name: name) do
       nil ->
@@ -48,7 +47,7 @@ defmodule CiStatus.Web do
     end
   end
 
-  def route("PUT", [type, "packages", name], conn) do
+  defp route("PUT", [type, "packages", name], conn) do
     {:ok, binbody, _} =
       conn |> Plug.Conn.read_body
     body = Poison.decode!(binbody)
@@ -63,7 +62,7 @@ defmodule CiStatus.Web do
     {:ok, "Status updated"}
   end
 
-  def route(_method, _path, _conn) do
+  defp route(_method, _path, _conn) do
     {:error, 404, "Not Found"}
   end
 end
