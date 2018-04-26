@@ -26,7 +26,7 @@ defmodule CiStatus.Web do
     |> Plug.Conn.send_resp(status, body)
   end
 
-  defp route("GET", [type, "packages", name, "versions", version, "badge"], _conn) do
+  defp route("GET", ["packages", name, "versions", version, type, "badge"], _conn) do
     IO.puts "Get '#{type}' badge for '#{name}' in version '#{version}'"
     case Repo.get_by(Schema.Status, type: type, name: name, version: version) do
       nil ->
@@ -37,7 +37,7 @@ defmodule CiStatus.Web do
     end
   end
 
-  defp route("GET", [type, "packages", name, "versions", version, "link"], _conn) do
+  defp route("GET", ["packages", name, "versions", version, type, "link"], _conn) do
     IO.puts "Get '#{type}' link for '#{name}' in version '#{version}'"
     case Repo.get_by(Schema.Status, type: type, name: name, version: version) do
       nil ->
@@ -47,7 +47,7 @@ defmodule CiStatus.Web do
     end
   end
 
-  defp route("PUT", [type, "packages", name, "versions", version], conn) do
+  defp route("PUT", ["packages", name, "versions", version, type], conn) do
     {:ok, binbody, _} =
       conn |> Plug.Conn.read_body
     body = Poison.decode!(binbody)

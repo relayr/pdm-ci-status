@@ -39,7 +39,55 @@ Create database
 $ mix ecto.migrate
 ```
 
+Test application
+```bash
+$ mix test
+```
+
 Run application
 ```bash
 $ mix run --no-halt
+```
+
+## REST API
+
+##### Set CI build status
+
+```
+> PUT https://ci-status.domain.com/packages/http-utils/versions/0.1.3/coverage
+> Content-Type: application/json
+
+{
+    "link": "https://ci.domain.com/jobs/148132",
+    "badge": {
+        "text": "73%",
+        "color":"orange"
+    }
+}
+
+< HTTP/1.1 200 OK
+
+Status Updated
+```
+
+---
+
+##### Get badge for CI build
+
+```
+> GET https://ci-status.domain.com/packages/http-utils/versions/0.1.3/coverage/badge
+
+< HTTP/1.1 301 Moved Permanently
+< Location: https://img.shields.io/badge/coverage-73%25-orange.svg
+```
+
+---
+
+##### Get link for CI build
+
+```
+> GET https://ci-status.domain.com/packages/http-utils/versions/0.1.3/coverage/link
+
+< HTTP/1.1 301 Moved Permanently
+< Location: https://ci.domain.com/jobs/148132
 ```
