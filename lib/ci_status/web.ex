@@ -56,13 +56,22 @@ defmodule CiStatus.Web do
     badge = body["badge"]
     badge_text = badge["text"]
     badge_color = badge["color"]
-    case Repo.get_by(Schema, type: type, name: name) do
+    result = case Repo.get_by(Schema, type: type, name: name) do
       nil  -> %Schema{type: type, name: name}
       status -> status
     end
     |> Schema.changeset(%{link: link, badge_text: badge_text, badge_color: badge_color})
     |> Repo.insert_or_update
-    {:ok, "Status updated"}
+    case result do
+      {:ok, _} ->
+        {:ok, "Status updated"}
+      {:error, changeset} ->
+        if not changeset.valid? do
+          {:error, 400, changeset.errors |> inspect}
+        else
+          {:error, 500, "Internal Server Error"}
+        end
+    end
   end
 
   defp route(_method, _path, _conn) do
