@@ -2,6 +2,6 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
-config :ci_status, ecto_repos: [CiStatus.Repo]
+config :ci_status, ecto_repos: [CiStatus.Db.Repo]
 
 import_config "#{Mix.env}.exs"

@@ -1,4 +1,4 @@
-defmodule CiStatus.Schema do
+defmodule CiStatus.Db.Schema.Status do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -6,6 +6,7 @@ defmodule CiStatus.Schema do
   schema "ci_statuses" do
     field :type, :string, primary_key: true
     field :name, :string, primary_key: true
+    field :version, :string, primary_key: true
     field :link, :string
     field :badge_text, :string
     field :badge_color, :string
@@ -23,18 +24,18 @@ defmodule CiStatus.Schema do
     validates field is a valid url
 
     ## Examples
-      iex> Ecto.Changeset.cast(%CiStatus.Schema{}, %{"link" => "https://www.zipbooks.com"}, [:link])
-      ...> |> CiStatus.Schema.validate_url(:link)
+      iex> Ecto.Changeset.cast(%CiStatus.Db.Schema.Status{}, %{"link" => "https://www.zipbooks.com"}, [:link])
+      ...> |> CiStatus.Db.Schema.Status.validate_url(:link)
       ...> |> Map.get(:valid?)
       true
 
-      iex> Ecto.Changeset.cast(%CiStatus.Schema{}, %{"link" => "http://zipbooks.com/"}, [:link])
-      ...> |> CiStatus.Schema.validate_url(:link)
+      iex> Ecto.Changeset.cast(%CiStatus.Db.Schema.Status{}, %{"link" => "http://zipbooks.com/"}, [:link])
+      ...> |> CiStatus.Db.Schema.Status.validate_url(:link)
       ...> |> Map.get(:valid?)
       true
 
-      iex> Ecto.Changeset.cast(%CiStatus.Schema{}, %{"link" => "zipbooks.com"}, [:link])
-      ...> |> CiStatus.Schema.validate_url(:link)
+      iex> Ecto.Changeset.cast(%CiStatus.Db.Schema.Status{}, %{"link" => "zipbooks.com"}, [:link])
+      ...> |> CiStatus.Db.Schema.Status.validate_url(:link)
       ...> |> Map.get(:valid?)
       false
     """
@@ -52,4 +53,3 @@ defmodule CiStatus.Schema do
     end
   end
 end
-

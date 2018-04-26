@@ -8,7 +8,7 @@ defmodule CiStatus.Supervisor do
   def init(:ok) do
     port = Application.get_env(:ci_status, :port)
     children = [
-      {CiStatus.Repo, name: CiStatus.Repo},
+      CiStatus.Db.Repo,
       Plug.Adapters.Cowboy.child_spec(:http, CiStatus.Web, [], port: port)
     ]
 

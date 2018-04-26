@@ -6,8 +6,8 @@ This is a simple server storage for CI build statuses of different types. Build 
 
 Both link and badge can be used in a README's markdown e.g.
 ```markdown
-[![Build](https://ci-status.domain.com/build/packages/http-utils/badge)](https://ci-status.domain.com/build/packages/http-utils/link) 
-[![Coverage](https://ci-status.domain.com/coverage/packages/http-utils/badge)](https://ci-status.domain.com/coverage/packages/http-utils/link) 
+[![Build](https://ci-status.domain.com/build/packages/http-utils/versions/latest/badge)](https://ci-status.domain.com/build/packages/http-utils/versions/latest/link) 
+[![Coverage](https://ci-status.domain.com/coverage/packages/http-utils/versions/0.1.3/badge)](https://ci-status.domain.com/coverage/packages/http-utils/versions/0.1.3/link) 
 ```
 
 ## Configuration
@@ -17,7 +17,7 @@ use Mix.Config
 
 config :ci_status, CiStatus.Repo,
   adapter: Sqlite.Ecto2,
-  database: "ci_statuses.sqlite3"
+  database: "ci_status.sqlite3"
 
 config :ci_status, port: 80
 ```

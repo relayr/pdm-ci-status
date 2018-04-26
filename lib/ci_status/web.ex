@@ -1,6 +1,6 @@
 defmodule CiStatus.Web do
-  alias CiStatus.Schema, as: Schema
-  alias CiStatus.Repo, as: Repo
+  alias CiStatus.Db.Schema, as: Schema
+  alias CiStatus.Db.Repo, as: Repo
 
   def init(opts) do
     IO.puts "Starting up CiStatus..."
@@ -26,41 +26,41 @@ defmodule CiStatus.Web do
     |> Plug.Conn.send_resp(status, body)
   end
 
-  defp route("GET", [type, "packages", name, "badge"], _conn) do
-    IO.puts "Get '#{type}' badge for '#{name}'"
-    case Repo.get_by(Schema, type: type, name: name) do
+  defp route("GET", [type, "packages", name, "versions", version, "badge"], _conn) do
+    IO.puts "Get '#{type}' badge for '#{name}' in version '#{version}'"
+    case Repo.get_by(Schema.Status, type: type, name: name, version: version) do
       nil ->
         {:error, 404, "Status not Found"}
-      %Schema{badge_text: badge_text, badge_color: badge_color} ->
+      %Schema.Status{badge_text: badge_text, badge_color: badge_color} ->
         badge_link = "https://img.shields.io/badge/" <> type <> "-" <> URI.encode(badge_text) <> "-" <> badge_color <> ".svg"
         {:redirect, badge_link}
     end
   end
 
-  defp route("GET", [type, "packages", name, "link"], _conn) do
-    IO.puts "Get '#{type}' link for '#{name}'"
-    case Repo.get_by(Schema, type: type, name: name) do
+  defp route("GET", [type, "packages", name, "versions", version, "link"], _conn) do
+    IO.puts "Get '#{type}' link for '#{name}' in version '#{version}'"
+    case Repo.get_by(Schema.Status, type: type, name: name, version: version) do
       nil ->
         {:error, 404, "Status not Found"}
-      %Schema{link: link} ->
+      %Schema.Status{link: link} ->
         {:redirect, link}
     end
   end
 
-  defp route("PUT", [type, "packages", name], conn) do
+  defp route("PUT", [type, "packages", name, "versions", version], conn) do
     {:ok, binbody, _} =
       conn |> Plug.Conn.read_body
     body = Poison.decode!(binbody)
-    IO.puts "Put '#{type}' status for '#{name}, body: #{binbody}'"
+    IO.puts "Put '#{type}' status for '#{name}, version: #{version}, body: #{binbody}'"
     link = body["link"]
     badge = body["badge"]
     badge_text = badge["text"]
     badge_color = badge["color"]
-    result = case Repo.get_by(Schema, type: type, name: name) do
-      nil  -> %Schema{type: type, name: name}
+    result = case Repo.get_by(Schema.Status, type: type, name: name, version: version) do
+      nil  -> %Schema.Status{type: type, name: name, version: version}
       status -> status
     end
-    |> Schema.changeset(%{link: link, badge_text: badge_text, badge_color: badge_color})
+    |> Schema.Status.changeset(%{link: link, badge_text: badge_text, badge_color: badge_color})
     |> Repo.insert_or_update
     case result do
       {:ok, _} ->
