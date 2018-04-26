@@ -3,8 +3,8 @@ defmodule CiStatus.Schema do
 
   @primary_key false
   schema "ci_statuses" do
-    field :type, :string
-    field :name, :string
+    field :type, :string, primary_key: true
+    field :name, :string, primary_key: true
     field :link, :string
     field :badge_text, :string
     field :badge_color, :string

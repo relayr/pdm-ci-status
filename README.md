@@ -26,7 +26,7 @@ config :ci_status, port: 80
 
 Set your required environment to prod or dev
 ```bash
-$ MIX_ENV=prod
+$ export MIX_ENV=prod
 ```
 
 Download dependencies

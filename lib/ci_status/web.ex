@@ -22,8 +22,8 @@ defmodule CiStatus.Web do
       end
     IO.puts("\n* HTTP response status: #{status}, body: #{body}")
     conn
-      |> Plug.Conn.merge_resp_headers(headers)
-      |> Plug.Conn.send_resp(status, body)
+    |> Plug.Conn.merge_resp_headers(headers)
+    |> Plug.Conn.send_resp(status, body)
   end
 
   defp route("GET", [type, "packages", name, "badge"], _conn) do
@@ -56,9 +56,12 @@ defmodule CiStatus.Web do
     badge = body["badge"]
     badge_text = badge["text"]
     badge_color = badge["color"]
-    status = %Schema{type: type, name: name, link: link, badge_text: badge_text, badge_color: badge_color}
-    # TODO: change to on_conflict: :replace_all when PSQL is used
-    Repo.insert(status, on_conflict: :nothing)
+    case Repo.get_by(Schema, type: type, name: name) do
+      nil  -> %Schema{type: type, name: name}
+      status -> status
+    end
+    |> Schema.changeset(%{link: link, badge_text: badge_text, badge_color: badge_color})
+    |> Repo.insert_or_update
     {:ok, "Status updated"}
   end
 
