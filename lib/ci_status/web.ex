@@ -13,8 +13,8 @@ defmodule CiStatus.Web do
     IO.puts "\n* HTTP request: #{method} #{conn.request_path}"
     {status, headers, body} =
       case route(method, path, conn) do
-        {:ok, body} ->
-          {200, [], body}
+        {:ok, headers, body} ->
+          {200, headers, body}
         {:redirect, link} ->
           {301, [{"location", link}], "Redirect to #{link}"}
         {:error, status, body} ->
@@ -33,7 +33,13 @@ defmodule CiStatus.Web do
         {:error, 404, "Status not Found"}
       %Schema.Status{badge_text: badge_text, badge_color: badge_color} ->
         badge_link = "https://img.shields.io/badge/" <> type <> "-" <> URI.encode(badge_text) <> "-" <> badge_color <> ".svg"
-        {:redirect, badge_link}
+        case HTTPoison.get(badge_link) do
+          {:ok, %HTTPoison.Response{status_code: 200, body: badge}} ->
+            headers = [{"content-type", "image/svg+xml"}]
+            {:ok, headers, badge}
+          {:ok, %HTTPoison.Response{status_code: status_code, body: rsp_body}} ->
+            {:error, status_code, rsp_body}
+        end
     end
   end
 
@@ -64,7 +70,7 @@ defmodule CiStatus.Web do
     |> Repo.insert_or_update
     case result do
       {:ok, _} ->
-        {:ok, "Status updated"}
+        {:ok, [], "Status updated"}
       {:error, changeset} ->
         if not changeset.valid? do
           {:error, 400, changeset.errors |> inspect}
