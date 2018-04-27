@@ -15,11 +15,20 @@ Configure prod.exs or dev.exs file
 ```
 use Mix.Config
 
-config :ci_status, CiStatus.Repo,
+config :ci_status, CiStatus.Db.Repo,
   adapter: Sqlite.Ecto2,
-  database: "ci_status.sqlite3"
+  database: "ci_statuses.sqlite3"
 
 config :ci_status, port: 80
+
+import_config "prod.secret.exs"
+```
+
+Configure prod.secret.exs or dev.secret.exs file
+```
+use Mix.Config
+
+config :ci_status, secret: "5eCr3t"
 ```
 
 ## Installation
@@ -52,10 +61,11 @@ $ mix run --no-halt
 ## REST API
 
 ##### Set CI build status
-
+This endpoint requires token authentication
 ```
 > PUT https://ci-status.domain.com/packages/http-utils/versions/0.1.3/coverage
-> Content-Type: application/json
+> x-ci-status-secret: 5eCr3t
+> content-type: application/json
 
 {
     "link": "https://ci.domain.com/jobs/148132",
@@ -78,7 +88,7 @@ Status Updated
 > GET https://ci-status.domain.com/packages/http-utils/versions/0.1.3/coverage/badge
 
 < HTTP/1.1 301 Moved Permanently
-< Location: https://img.shields.io/badge/coverage-73%25-orange.svg
+< location: https://img.shields.io/badge/coverage-73%25-orange.svg
 ```
 
 ---
@@ -89,5 +99,5 @@ Status Updated
 > GET https://ci-status.domain.com/packages/http-utils/versions/0.1.3/coverage/link
 
 < HTTP/1.1 301 Moved Permanently
-< Location: https://ci.domain.com/jobs/148132
+< location: https://ci.domain.com/jobs/148132
 ```

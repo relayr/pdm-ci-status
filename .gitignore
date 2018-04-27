@@ -24,3 +24,6 @@ ci_status-*.tar
 
 .idea
 .iml
+
+# Ignore prod authentication secret
+/config/prod.secret.exs

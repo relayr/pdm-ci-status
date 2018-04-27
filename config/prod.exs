@@ -8,3 +8,5 @@ config :ci_status, CiStatus.Db.Repo,
   hostname: "localhost"
 
 config :ci_status, port: 80
+
+import_config "prod.secret.exs"
