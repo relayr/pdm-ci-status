@@ -1,5 +1,7 @@
 # CiStatus
 
+[![Build Status](https://travis-ci.org/relayr/pdm-ci-status.svg?branch=master)](https://travis-ci.org/relayr/pdm-ci-status)
+
 This is a simple server storage for CI build statuses of different types. Build status consists of:
 * link - custom link e.g. to CI server's task that generated this build
 * badge - metadata used to generate badge with https://shields.io
