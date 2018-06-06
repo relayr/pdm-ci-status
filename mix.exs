@@ -13,12 +13,12 @@ defmodule CiStatus.MixProject do
 
   # Run "mix help compile.app" to learn about applications.
   def application do
-    db_engine = case Mix.env() do
+    db_app = case Mix.env() do
       :prod -> :postgrex
       _ -> :sqlite_ecto2
     end
     [
-      applications: [:logger, db_engine, :ecto, :cowboy, :plug],
+      applications: [:logger, db_app, :ecto, :cowboy, :plug, :httpoison],
       mod: {CiStatus.App, []}
     ]
   end
@@ -34,7 +34,8 @@ defmodule CiStatus.MixProject do
       {:plug, "~> 1.0"},
       db_app,
       {:ecto, "~> 2.2"},
-      {:poison, "~> 3.1"}
+      {:poison, "~> 3.1"},
+      {:httpoison, "~> 1.0"}
     ]
   end
 end
