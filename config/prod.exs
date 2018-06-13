@@ -8,5 +8,6 @@ config :ci_status, CiStatus.Db.Repo,
   hostname: "localhost"
 
 config :ci_status, port: 80
+config :ci_status, shields_url: "https://img.shields.io"
 
 import_config "prod.secret.exs"

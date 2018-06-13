@@ -5,5 +5,6 @@ config :ci_status, CiStatus.Db.Repo,
   database: "ci_statuses.sqlite3"
 
 config :ci_status, port: 8880
+config :ci_status, shields_url: "https://img.shields.io"
 
 import_config "dev.secret.exs"

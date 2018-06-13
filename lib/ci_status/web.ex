@@ -3,6 +3,7 @@ defmodule CiStatus.Web do
   alias CiStatus.Db.Repo, as: Repo
 
   @secret Application.get_env(:ci_status, :secret)
+  @shields_url Application.get_env(:ci_status, :shields_url)
 
   def init(opts) do
     IO.puts "Starting up CiStatus..."
@@ -34,7 +35,7 @@ defmodule CiStatus.Web do
       nil ->
         {:error, 404, "Status not Found"}
       %Schema.Status{badge_text: badge_text, badge_color: badge_color} ->
-        badge_link = "https://img.shields.io/badge/" <> type <> "-" <> URI.encode(badge_text) <> "-" <> badge_color <> ".svg"
+        badge_link = @shields_url <> "/badge/" <> type <> "-" <> URI.encode(badge_text) <> "-" <> badge_color <> ".svg"
         case HTTPoison.get(badge_link) do
           {:ok, %HTTPoison.Response{status_code: 200, body: badge}} ->
             headers = [{"content-type", "image/svg+xml"}]
